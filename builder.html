@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f3ed">
+    <meta name="description" content="Create a simple, downloadable website for your local business.">
+    <title>Free Website Builder — Small Hours Studio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="builder.css">
+    <script src="builder.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Small Hours Studio home">
+        <span class="brand-mark" aria-hidden="true">sh</span>
+        <span>small hours<span class="brand-period">.</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html">Studio</a>
+        <a class="nav-cta" href="index.html#price">Get help <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main class="builder-main">
+      <section class="builder-intro" aria-labelledby="builder-title">
+        <div>
+          <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> Free website builder</p>
+          <h1 id="builder-title">Your business,<br><span>one good page.</span></h1>
+          <p class="builder-lede">Add your real details, see the page update, then download a ready-to-open HTML file. No account or payment needed.</p>
+        </div>
+        <aside class="mode-note" aria-label="How this builder works">
+          <span class="mode-pill"><span aria-hidden="true">✳</span> Template mode</span>
+          <p>This version builds from a local template. It does not send your details anywhere or call an AI service.</p>
+        </aside>
+      </section>
+
+      <section class="builder-workspace" aria-label="Website editor and preview">
+        <form class="builder-form" id="website-form">
+          <div class="builder-panel-heading">
+            <span class="builder-number">01</span>
+            <div>
+              <h2>Your details</h2>
+              <p>Start with the basics. You can change them anytime.</p>
+            </div>
+          </div>
+
+          <label for="business-name">Business name</label>
+          <input id="business-name" name="businessName" type="text" value="Example Studio" maxlength="70" autocomplete="organization">
+
+          <label for="business-type">What do you do?</label>
+          <select id="business-type" name="businessType">
+            <option value="local">Local business</option>
+            <option value="beauty">Beauty and personal care</option>
+            <option value="food">Cafe or food business</option>
+            <option value="home">Home services</option>
+            <option value="creative">Creative studio</option>
+          </select>
+
+          <label for="description">Describe what you offer</label>
+          <textarea id="description" name="description" rows="3" maxlength="180">Friendly service and thoughtful work for people in the neighborhood.</textarea>
+          <p class="builder-hint">This text appears near the top of your page. Keep it true and simple.</p>
+
+          <label for="services">Services or products <span class="optional">(one per line)</span></label>
+          <textarea id="services" name="services" rows="4" maxlength="420">Service one
+Service two
+Service three</textarea>
+
+          <div class="builder-field-row">
+            <div>
+              <label for="area">Town or area <span class="optional">(optional)</span></label>
+              <input id="area" name="area" type="text" placeholder="Your town" maxlength="70" autocomplete="address-level2">
+            </div>
+            <div>
+              <label for="theme">Page colour</label>
+              <select id="theme" name="theme">
+                <option value="coral">Coral</option>
+                <option value="blue">Periwinkle</option>
+                <option value="leaf">Leaf green</option>
+              </select>
+            </div>
+          </div>
+
+          <label for="email">Contact email <span class="optional">(optional)</span></label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email">
+
+          <label for="phone">Phone number <span class="optional">(optional)</span></label>
+          <input id="phone" name="phone" type="tel" placeholder="Your business phone" autocomplete="tel">
+
+          <p class="privacy-note"><span aria-hidden="true">↳</span> Your details stay in this browser.</p>
+        </form>
+
+        <section class="builder-preview" aria-labelledby="preview-title">
+          <div class="builder-preview-heading">
+            <div class="builder-panel-heading">
+              <span class="builder-number builder-number-blue">02</span>
+              <div>
+                <h2 id="preview-title">Live preview</h2>
+                <p>Change the form to update your page.</p>
+              </div>
+            </div>
+            <div class="preview-switch" role="group" aria-label="Preview size">
+              <button id="preview-desktop" type="button" aria-pressed="true">Desktop</button>
+              <button id="preview-phone" type="button" aria-pressed="false">Phone</button>
+            </div>
+          </div>
+          <div class="preview-stage">
+            <iframe id="site-preview" title="Preview of your generated website" sandbox></iframe>
+          </div>
+          <div class="download-row">
+            <div>
+              <h3>Ready to take it with you?</h3>
+              <p>Download one self-contained HTML file. Your styles are included.</p>
+            </div>
+            <button class="button button-dark download-button" id="download-button" type="button">
+              Download my site <span aria-hidden="true">↓</span>
+            </button>
+          </div>
+          <p class="builder-status" id="builder-status" role="status" aria-live="polite"></p>
+        </section>
+      </section>
+
+      <section class="ai-upgrade" aria-labelledby="ai-title">
+        <div class="ai-symbol" aria-hidden="true">AI</div>
+        <div>
+          <p class="section-label">THE HONEST UPGRADE PATH</p>
+          <h2 id="ai-title">Want real AI writing and design?</h2>
+          <p>This free version uses templates, not an AI model. A real AI feature needs a private server and an AI-provider key; the key must never be placed in this public page. Add that only after choosing a provider and checking its costs.</p>
+        </div>
+        <a class="text-link" href="index.html#price">Ask for a custom site</a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand" href="index.html" aria-label="Small Hours Studio home">
+        <span class="brand-mark" aria-hidden="true">sh</span>
+        <span>small hours<span class="brand-period">.</span></span>
+      </a>
+      <p>Your page is made in this browser.</p>
+      <a class="footer-top" href="index.html">Back to the studio ↑</a>
+    </footer>
+  </body>
+</html>
