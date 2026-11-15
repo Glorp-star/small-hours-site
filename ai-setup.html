@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f3ed">
+    <meta name="description" content="Set up the private Gemini connection for the Small Hours AI website builder.">
+    <title>Connect Gemini — Small Hours Studio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="builder.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Small Hours Studio home">
+        <span class="brand-mark" aria-hidden="true">sh</span>
+        <span>small hours<span class="brand-period">.</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="builder.html">AI builder</a>
+        <a class="nav-cta" href="index.html">Studio <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main class="ai-setup-page">
+      <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> One-time setup</p>
+      <h1>Connect Gemini<br><span>the safe way.</span></h1>
+      <p class="builder-lede">The builder needs a small private backend. You keep the API key in Cloudflare; it never goes in the public website or this chat.</p>
+
+      <section class="setup-step">
+        <h2>Create a Gemini API key</h2>
+        <p>Sign in to <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer">Google AI Studio</a> and create a key for a project with Gemini API access. Keep the key private.</p>
+        <p>Start with the free tier and leave paid billing off. Free-tier limits apply, and Google may use free-tier prompts to improve its products.</p>
+      </section>
+
+      <section class="setup-step">
+        <h2>Deploy the private backend</h2>
+        <ol>
+          <li>Create or sign in to a <a href="https://dash.cloudflare.com/sign-up" target="_blank" rel="noreferrer">Cloudflare account</a>.</li>
+          <li>Install Node.js if it is not already installed.</li>
+          <li>Open a terminal in this project folder and run:</li>
+        </ol>
+        <pre><code>npx wrangler login
+npx wrangler deploy</code></pre>
+        <p>Add the Gemini key as a private Worker secret. Paste it only into the terminal prompt:</p>
+        <pre><code>npx wrangler secret put GEMINI_API_KEY</code></pre>
+        <p>Copy the Worker URL shown by Wrangler. It will look like <code>https://small-hours-ai.YOUR-SUBDOMAIN.workers.dev</code>.</p>
+      </section>
+
+      <section class="setup-step">
+        <h2>Connect the website</h2>
+        <p>In <code>ai-config.js</code>, set the public Worker URL and add <code>/api/generate</code>:</p>
+        <pre><code>window.SMALL_HOURS_AI_CONFIG = Object.freeze({
+  endpoint: "https://small-hours-ai.YOUR-SUBDOMAIN.workers.dev/api/generate",
+});</code></pre>
+        <p>Commit and push that configuration change to <code>main</code>. The endpoint URL is public; the API key is not.</p>
+      </section>
+
+      <aside class="setup-caution">
+        <strong>Keep private information out.</strong>
+        <p>The business name, description, services, area, and creative brief go to Gemini only after the user checks consent. Contact email and phone stay in the browser. Do not enter sensitive information.</p>
+      </aside>
+
+      <a class="button button-dark" href="builder.html">Back to the AI builder <span aria-hidden="true">↗</span></a>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand" href="index.html" aria-label="Small Hours Studio home">
+        <span class="brand-mark" aria-hidden="true">sh</span>
+        <span>small hours<span class="brand-period">.</span></span>
+      </a>
+      <p>Keep your API key private.</p>
+      <a class="footer-top" href="builder.html">AI builder ↑</a>
+    </footer>
+  </body>
+</html>
