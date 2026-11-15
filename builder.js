@@ -4,6 +4,10 @@ const generateButton = document.querySelector("#generate-button");
 const downloadButton = document.querySelector("#download-button");
 const builderStatus = document.querySelector("#builder-status");
 const setupNotice = document.querySelector("#ai-setup-notice");
+const connectionStatus = document.querySelector("#ai-connection-status");
+const setupTitle = document.querySelector("#ai-setup-title");
+const setupMessage = document.querySelector("#ai-setup-message");
+const setupLink = document.querySelector("#ai-setup-link");
 const desktopButton = document.querySelector("#preview-desktop");
 const phoneButton = document.querySelector("#preview-phone");
 const consentCheckbox = document.querySelector("#ai-consent");
@@ -71,11 +75,18 @@ const themes = {
   },
 };
 
+const publishedSiteOrigin = "https://glorp-star.github.io";
+const publishedBuilderUrl = "https://glorp-star.github.io/small-hours-site/builder.html";
+const isPublishedSite = window.location.origin === publishedSiteOrigin;
 const endpoint = getApiEndpoint();
 let generatedSite = null;
 let activeRequest = null;
 
 function getApiEndpoint() {
+  if (window.location.origin !== publishedSiteOrigin) {
+    return "";
+  }
+
   const configuredEndpoint = window.SMALL_HOURS_AI_CONFIG?.endpoint;
   if (typeof configuredEndpoint !== "string" || !configuredEndpoint.trim()) {
     return "";
@@ -89,6 +100,31 @@ function getApiEndpoint() {
   } catch {
     return "";
   }
+}
+
+function showConnectionState() {
+  if (!isPublishedSite) {
+    connectionStatus.textContent = "Open the online builder to use Gemini.";
+    setupTitle.textContent = "Use the online builder for AI generation.";
+    setupMessage.textContent =
+      "This local copy cannot connect to the private AI service. Your project details will not be sent.";
+    setupLink.href = publishedBuilderUrl;
+    setupLink.textContent = "Open the online builder";
+    setupNotice.hidden = false;
+    generateButton.disabled = true;
+    builderStatus.textContent = "This local copy cannot reach Gemini. Open the online builder instead.";
+    return;
+  }
+
+  if (!endpoint) {
+    connectionStatus.textContent = "Gemini setup is required before you can generate a site.";
+    setupNotice.hidden = false;
+    builderStatus.textContent = "Gemini setup is required before the AI generator can run.";
+    return;
+  }
+
+  connectionStatus.textContent =
+    "Connected to Gemini. Your details are sent to Google only when you choose to generate a site.";
 }
 
 function escapeHtml(value) {
@@ -397,7 +433,4 @@ phoneButton.addEventListener("click", () => setPreviewSize("phone"));
 
 downloadButton.disabled = true;
 showEmptyPreview();
-if (!endpoint) {
-  setupNotice.hidden = false;
-  builderStatus.textContent = "Gemini setup is required before the AI generator can run.";
-}
+showConnectionState();
