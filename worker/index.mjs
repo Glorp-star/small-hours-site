@@ -158,8 +158,9 @@ function extractOutputText(response) {
     return interaction.output_text;
   }
 
+  const steps = Array.isArray(interaction?.steps) ? interaction.steps : [];
   const output = Array.isArray(interaction?.output) ? interaction.output : [];
-  return output
+  return [...steps, ...output]
     .flatMap((item) => (Array.isArray(item?.content) ? item.content : []))
     .filter((item) => item?.type === "text" && typeof item.text === "string")
     .map((item) => item.text)

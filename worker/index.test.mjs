@@ -74,7 +74,16 @@ test("validates model output and keeps contact details out of the Gemini prompt"
   globalThis.fetch = async (url, options) => {
     providerRequest = { url: String(url), options };
     return new Response(
-      JSON.stringify({ interaction: { output_text: JSON.stringify(generatedSite) } }),
+      JSON.stringify({
+        object: "interaction",
+        status: "completed",
+        steps: [
+          {
+            type: "model_output",
+            content: [{ type: "text", text: JSON.stringify(generatedSite) }],
+          },
+        ],
+      }),
       { status: 200, headers: { "Content-Type": "application/json" } },
     );
   };
@@ -115,7 +124,16 @@ test("limits repeated generations from one client IP", async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () =>
     new Response(
-      JSON.stringify({ interaction: { output_text: JSON.stringify(generatedSite) } }),
+      JSON.stringify({
+        object: "interaction",
+        status: "completed",
+        steps: [
+          {
+            type: "model_output",
+            content: [{ type: "text", text: JSON.stringify(generatedSite) }],
+          },
+        ],
+      }),
       { status: 200, headers: { "Content-Type": "application/json" } },
     );
 

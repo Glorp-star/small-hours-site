@@ -47,12 +47,9 @@ npx wrangler deploy</code></pre>
       </section>
 
       <section class="setup-step">
-        <h2>Connect the website</h2>
-        <p>In <code>ai-config.js</code>, set the public Worker URL and add <code>/api/generate</code>:</p>
-        <pre><code>window.SMALL_HOURS_AI_CONFIG = Object.freeze({
-  endpoint: "https://small-hours-ai.YOUR-SUBDOMAIN.workers.dev/api/generate",
-});</code></pre>
-        <p>Commit and push that configuration change to <code>main</code>. The endpoint URL is public; the API key is not.</p>
+        <h2>The builder is connected</h2>
+        <p>The public website now sends generation requests to its private Cloudflare Worker. Your Gemini API key stays in Cloudflare and is not included in the website files.</p>
+        <p>To try it, open the AI builder, enter non-sensitive project details, review the data notice, and check the consent box before generating.</p>
       </section>
 
       <aside class="setup-caution">
