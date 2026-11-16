@@ -3,6 +3,8 @@ const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/intera
 const MAX_REQUEST_BYTES = 16_384;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_REQUESTS = 4;
+const RETRYABLE_PROVIDER_STATUSES = new Set([500, 502, 503, 504]);
+const PROVIDER_RETRY_DELAY_MS = 1_000;
 const rateLimits = new Map();
 
 const themes = new Set(["coral", "blue", "leaf", "ink", "sand"]);
@@ -217,7 +219,7 @@ function buildPrompt(input) {
 }
 
 async function generateSite(input, apiKey) {
-  const response = await fetch(GEMINI_ENDPOINT, {
+  const requestOptions = {
     method: "POST",
     headers: {
       "Api-Revision": "2026-05-20",
@@ -235,11 +237,23 @@ async function generateSite(input, apiKey) {
       generation_config: { max_output_tokens: 1_200 },
     }),
     signal: AbortSignal.timeout(45_000),
-  });
+  };
 
-  if (!response.ok) {
+  let response;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    response = await fetch(GEMINI_ENDPOINT, requestOptions);
+    if (response.ok) {
+      break;
+    }
     if (response.status === 429) {
       throw new Error("quota");
+    }
+    if (RETRYABLE_PROVIDER_STATUSES.has(response.status) && attempt === 0) {
+      await new Promise((resolve) => setTimeout(resolve, PROVIDER_RETRY_DELAY_MS));
+      continue;
+    }
+    if (response.status === 503) {
+      throw new Error("temporarily-unavailable");
     }
     console.error("Gemini request failed with status", response.status);
     throw new Error("provider");
@@ -321,6 +335,13 @@ async function handleGenerate(request, env) {
       return jsonResponse(
         { error: "Gemini's usage limit was reached. Try again later or check Google AI Studio." },
         429,
+        headers,
+      );
+    }
+    if (error.message === "temporarily-unavailable") {
+      return jsonResponse(
+        { error: "Gemini is temporarily unavailable. Wait a minute, then try again." },
+        503,
         headers,
       );
     }

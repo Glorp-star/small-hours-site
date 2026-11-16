@@ -106,6 +106,65 @@ test("validates model output and keeps contact details out of the Gemini prompt"
   }
 });
 
+test("retries Gemini once after a temporary service error", async () => {
+  const originalFetch = globalThis.fetch;
+  let attempts = 0;
+  globalThis.fetch = async () => {
+    attempts += 1;
+    if (attempts === 1) {
+      return new Response(null, { status: 503 });
+    }
+    return new Response(
+      JSON.stringify({
+        object: "interaction",
+        status: "completed",
+        steps: [
+          {
+            type: "model_output",
+            content: [{ type: "text", text: JSON.stringify(generatedSite) }],
+          },
+        ],
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    );
+  };
+
+  try {
+    const response = await worker.fetch(
+      makeRequest(input, { ip: "192.0.2.11" }),
+      environment,
+    );
+
+    assert.equal(response.status, 200);
+    assert.equal(attempts, 2);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("reports persistent Gemini unavailability after the retry", async () => {
+  const originalFetch = globalThis.fetch;
+  let attempts = 0;
+  globalThis.fetch = async () => {
+    attempts += 1;
+    return new Response(null, { status: 503 });
+  };
+
+  try {
+    const response = await worker.fetch(
+      makeRequest(input, { ip: "192.0.2.12" }),
+      environment,
+    );
+    const body = await response.json();
+
+    assert.equal(response.status, 503);
+    assert.match(body.error, /temporarily unavailable/i);
+    assert.equal(attempts, 2);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test("rejects oversized and incomplete requests", async () => {
   const oversized = await worker.fetch(
     makeRequest(null, { rawBody: "x".repeat(17_000), ip: "192.0.2.20" }),
